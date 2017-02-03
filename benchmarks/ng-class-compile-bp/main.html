@@ -1,0 +1,115 @@
+<style>
+  .gold {
+    background: gold;
+  }
+  .silver {
+    background: silver;
+  }
+  .table tbody tr > td.success {
+    background-color: #dff0d8;
+  }
+
+  .table tbody tr > td.error {
+    background-color: #f2dede;
+  }
+
+  .table tbody tr > td.warning {
+    background-color: #fcf8e3;
+  }
+
+  .table tbody tr > td.info {
+    background-color: #d9edf7;
+  }
+  .completed {
+    text-decoration: line-through;
+  }
+  .important {
+    font-weight: bold;
+  }
+  .urgent {
+      color: red;
+  }
+</style>
+<div ng-app="ngClassBenchmark" ng-cloak class="container-fluid">
+  <benchmark class="row">
+    <div class="col-lg-12">
+
+      <div class="well">
+        <h3>Parameters</h3>
+
+        <br>
+        <p>
+          <label>Number of todos</label><br>
+          <input type="number" ng-model="benchmark.numberOfTodos">
+        </p>
+        <p>
+          <label>Template</label><br>
+          <select ng-model="benchmark.selectedTemplate"
+            ng-options="item.name for item in benchmark.templates"
+            ng-change="benchmark.updateBind()"></select>
+        </p>
+        <p>
+          <label>Implementation</label><br>
+          <select ng-model="benchmark.selectedImplementation"
+            ng-options="item.label for item in benchmark.implementations"
+            ng-change="benchmark.updateBind()"></select>
+        </p>
+      </div>
+
+      <br>
+      <h3>Example</h3>
+      <benchmark-bind></benchmark-bind>
+
+      <script type="text/bechmark-template" name="list">
+        <ul>
+          <li ng-repeat="todo in benchmark.todos.list track by todo.id"
+            {%= implementation %}="{
+              completed: todo.completed,
+              urgent: todo.urgent,
+              important: todo.important
+            }">#{{todo.id}}</li>
+        </ul>
+      </script>
+
+      <script type="text/bechmark-template" name="table">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>todo #id</th>
+              <th>completed?</th>
+              <th>urgent?</th>
+              <th>important?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="todo in benchmark.todos.list track by todo.id"
+              {%= implementation %}="{ active: todo.completed }"
+              >
+                <td>#{{todo.id}}</td>
+                <td>{{todo.completed}}</td>
+                <td {%= implementation %}="{ danger: todo.urgent }">{{todo.urgent}}</td>
+                <td {%= implementation %}="{ success: todo.important }">{{todo.important}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </script>
+
+      <script type="text/bechmark-template" name="multiple">
+        <ul>
+          <li ng-repeat="todo in benchmark.todos.list track by todo.id">
+            <span {%= implementation %}="'completed'">a</span>
+            <span {%= implementation %}="'urgent'">b</span>
+            <span {%= implementation %}="todo.important && 'important'">c</span>
+            <span {%= implementation %}="'completed'">a</span>
+            <span {%= implementation %}="'urgent'">b</span>
+            <span {%= implementation %}="todo.important && 'important'">c</span>
+            <span {%= implementation %}="'completed'">a</span>
+            <span {%= implementation %}="'urgent'">b</span>
+          </li>
+        </ul>
+      </script>
+
+    </div>
+  </benchmark>
+</div>
+<br><br><br>
